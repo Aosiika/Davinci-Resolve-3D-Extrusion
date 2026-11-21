@@ -32,7 +32,7 @@ icons, logos and stickers look like proper 3D pieces instead of flat cards.
 
 ### Option 1 – Bundle (recommended)
 
-1. Download **`3D Extrusion - Aosika.drfx`** from the [Releases](../../releases) page (or from the [`release`](release) folder).
+1. Download **`3D-Extrusion-Aosika.drfx`** from the [Releases](../../releases) page (or from the [`release`](release) folder).
 2. With DaVinci Resolve open, double-click the `.drfx` file or drag it onto the Resolve window, and confirm the installation.
 3. Restart DaVinci Resolve.
 

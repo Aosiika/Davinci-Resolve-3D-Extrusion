@@ -32,7 +32,7 @@ así que el pixel art, los iconos, los logos y las pegatinas parecen piezas 3D r
 
 ### Opción 1 – Paquete (recomendada)
 
-1. Descarga **`3D Extrusion - Aosika.drfx`** desde [Releases](../../releases) (o desde la carpeta [`release`](release)).
+1. Descarga **`3D-Extrusion-Aosika.drfx`** desde [Releases](../../releases) (o desde la carpeta [`release`](release)).
 2. Con DaVinci Resolve abierto, haz doble clic en el archivo `.drfx` o arrástralo a la ventana de Resolve, y confirma la instalación.
 3. Reinicia DaVinci Resolve.
 
