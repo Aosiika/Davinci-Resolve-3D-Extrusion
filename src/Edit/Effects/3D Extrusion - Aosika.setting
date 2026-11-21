@@ -1,0 +1,462 @@
+{
+	Tools = ordered() {
+		ThreeDExtrusion = GroupOperator {
+			CtrlWZoom = false,
+			Inputs = ordered() {
+				MainInput1 = InstanceInput {
+					SourceOp = "In",
+					Source = "Input",
+				},
+				Scale = InstanceInput {
+					SourceOp = "Group",
+					Source = "Transform3DOp.Scale.X",
+					Name = "Scale",
+					Default = 1,
+				},
+				Depth = InstanceInput {
+					SourceOp = "Depth",
+					Source = "Transform3DOp.Scale.Z",
+					Name = "Extrusion Depth",
+					Default = 0.5,
+				},
+				SidesMix = InstanceInput {
+					SourceOp = "SidesMode",
+					Source = "Mix",
+					Name = "Sides: 0 Color / 1 Texture",
+					Default = 1,
+				},
+				SideRed = InstanceInput {
+					SourceOp = "SidesColor",
+					Source = "TopLeftRed",
+					Name = "Sides Color",
+					ControlGroup = 1,
+					Default = 0.25,
+				},
+				SideGreen = InstanceInput {
+					SourceOp = "SidesColor",
+					Source = "TopLeftGreen",
+					ControlGroup = 1,
+					Default = 0.25,
+				},
+				SideBlue = InstanceInput {
+					SourceOp = "SidesColor",
+					Source = "TopLeftBlue",
+					ControlGroup = 1,
+					Default = 0.25,
+				},
+				Bevel = InstanceInput {
+					SourceOp = "Extrude",
+					Source = "BevelWidth",
+					Name = "Bevel Width",
+					Default = 0,
+				},
+				Light = InstanceInput {
+					SourceOp = "KeyLight",
+					Source = "Intensity",
+					Name = "Light Intensity",
+					Default = 0.4,
+				},
+				XRot = InstanceInput {
+					SourceOp = "Rot",
+					Source = "Transform3DOp.Rotate.X",
+					Name = "X Rotation",
+					Default = 0,
+				},
+				YRot = InstanceInput {
+					SourceOp = "Rot",
+					Source = "Transform3DOp.Rotate.Y",
+					Name = "Y Rotation",
+					Default = 0,
+				},
+				ZRot = InstanceInput {
+					SourceOp = "Rot",
+					Source = "Transform3DOp.Rotate.Z",
+					Name = "Z Rotation",
+					Default = 0,
+				},
+				Thresh = InstanceInput {
+					SourceOp = "Trace",
+					Source = "Threshold",
+					Name = "Alpha Threshold",
+					Default = 0.5,
+				},
+				UVX = InstanceInput {
+					SourceOp = "UV",
+					Source = "Size.X",
+					Name = "Texture Size X",
+					Default = 1,
+				},
+				UVY = InstanceInput {
+					SourceOp = "UV",
+					Source = "Size.Y",
+					Name = "Texture Size Y",
+					Default = 0.5625,
+				},
+				AutoRotateIn = InstanceInput {
+					SourceOp = "Spin",
+					Source = "AutoRotate",
+					Default = 0,
+				},
+				TurnsIn = InstanceInput {
+					SourceOp = "Spin",
+					Source = "Turns",
+					Default = 0.5,
+				},
+			},
+			Outputs = {
+				MainOutput1 = InstanceOutput {
+					SourceOp = "Render",
+					Source = "Output",
+				},
+			},
+			ViewInfo = GroupInfo { Pos = { 0, 0 } },
+			Tools = ordered() {
+				In = Transform {
+					CtrlWShown = false,
+					Inputs = {
+					},
+					ViewInfo = OperatorInfo { Pos = { 0, 0 } },
+				},
+				Trace = KD_ShapeTraceCreate {
+					CtrlWShown = false,
+					Inputs = {
+						Image = Input {
+							SourceOp = "In",
+							Source = "Output",
+						},
+						MapChannel = Input { Value = 3, },
+						Threshold = Input { Value = 0.5, },
+						CurvePrecision = Input { Value = 16, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 110, 60 } },
+				},
+				BleedBlur1 = Blur {
+					CtrlWShown = false,
+					Inputs = {
+						Input = Input {
+							SourceOp = "In",
+							Source = "Output",
+						},
+						XBlurSize = Input { Value = 4, },
+					},
+					ViewInfo = OperatorInfo { Pos = { -110, -140 } },
+				},
+				BleedDiv1 = AlphaDivide {
+					CtrlWShown = false,
+					Inputs = {
+						Input = Input {
+							SourceOp = "BleedBlur1",
+							Source = "Output",
+						},
+					},
+					ViewInfo = OperatorInfo { Pos = { 0, -140 } },
+				},
+				BleedHard1 = MatteControl {
+					CtrlWShown = false,
+					Inputs = {
+						Background = Input {
+							SourceOp = "BleedDiv1",
+							Source = "Output",
+						},
+						LowMatteThreshold = Input { Value = 0.001, },
+						HighMatteThreshold = Input { Value = 0.002, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 110, -140 } },
+				},
+				BleedBlur2 = Blur {
+					CtrlWShown = false,
+					Inputs = {
+						Input = Input {
+							SourceOp = "In",
+							Source = "Output",
+						},
+						XBlurSize = Input { Value = 25, },
+					},
+					ViewInfo = OperatorInfo { Pos = { -110, -80 } },
+				},
+				BleedDiv2 = AlphaDivide {
+					CtrlWShown = false,
+					Inputs = {
+						Input = Input {
+							SourceOp = "BleedBlur2",
+							Source = "Output",
+						},
+					},
+					ViewInfo = OperatorInfo { Pos = { 0, -80 } },
+				},
+				BleedHard2 = MatteControl {
+					CtrlWShown = false,
+					Inputs = {
+						Background = Input {
+							SourceOp = "BleedDiv2",
+							Source = "Output",
+						},
+						LowMatteThreshold = Input { Value = 0.001, },
+						HighMatteThreshold = Input { Value = 0.002, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 110, -80 } },
+				},
+				BleedMerge1 = Merge {
+					CtrlWShown = false,
+					Inputs = {
+						Background = Input {
+							SourceOp = "BleedHard2",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "BleedHard1",
+							Source = "Output",
+						},
+					},
+					ViewInfo = OperatorInfo { Pos = { 220, -140 } },
+				},
+				BleedMerge2 = Merge {
+					CtrlWShown = false,
+					Inputs = {
+						Background = Input {
+							SourceOp = "BleedMerge1",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "In",
+							Source = "Output",
+						},
+					},
+					ViewInfo = OperatorInfo { Pos = { 330, -140 } },
+				},
+				Opaque = MatteControl {
+					CtrlWShown = false,
+					Inputs = {
+						Background = Input {
+							SourceOp = "BleedMerge2",
+							Source = "Output",
+						},
+						MatteCombine = Input { Value = 5, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 110, -60 } },
+				},
+				SidesColor = Background {
+					CtrlWShown = false,
+					Inputs = {
+						UseFrameFormatSettings = Input { Value = 1, },
+						TopLeftRed = Input { Value = 0.25, },
+						TopLeftGreen = Input { Value = 0.25, },
+						TopLeftBlue = Input { Value = 0.25, },
+						TopLeftAlpha = Input { Value = 1, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 220, -120 } },
+				},
+				SidesMode = Dissolve {
+					CtrlWShown = false,
+					Inputs = {
+						Background = Input {
+							SourceOp = "SidesColor",
+							Source = "Output",
+						},
+						Foreground = Input {
+							SourceOp = "Opaque",
+							Source = "Output",
+						},
+						Mix = Input { Value = 1, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 220, -60 } },
+				},
+				SideMtl = MtlBlinn {
+					CtrlWShown = false,
+					Inputs = {
+						["Diffuse.Color.Material"] = Input {
+							SourceOp = "SidesMode",
+							Source = "Output",
+						},
+						["Specular.Intensity"] = Input { Value = 0.15, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 330, -60 } },
+				},
+				Extrude = Extrude3D {
+					CtrlWShown = false,
+					Inputs = {
+						ShapeInput = Input {
+							SourceOp = "Trace",
+							Source = "Output",
+						},
+						MaterialInput = Input {
+							SourceOp = "SideMtl",
+							Source = "MaterialOutput",
+						},
+						BevelMaterialInput = Input {
+							SourceOp = "SideMtl",
+							Source = "MaterialOutput",
+						},
+						ExtrusionStyle = Input { Value = 0, },
+						ExtrusionDepth = Input { Value = 0.2, },
+						BevelDepth = Input { Value = 0, },
+						BevelWidth = Input { Value = 0, },
+						FrontBevel = Input { Value = 0, },
+						BackBevel = Input { Value = 0, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 220, 60 } },
+				},
+				UV = UVMap {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput = Input {
+							SourceOp = "Extrude",
+							Source = "Output",
+						},
+						MapMode = Input { Value = FuID { "Planar" }, },
+						Orientation = Input { Value = 2, },
+						["Size.X"] = Input { Value = 1, },
+						["Size.Y"] = Input { Value = 0.5625, },
+						["Size.Z"] = Input { Value = 1, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 330, 60 } },
+				},
+				Stack = Merge3D {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput1 = Input {
+							SourceOp = "UV",
+							Source = "Output",
+						},
+						["Transform3DOp.Translate.Z"] = Input { Value = -0.1, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 440, 60 } },
+				},
+				Depth = Transform3D {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput = Input {
+							SourceOp = "Stack",
+							Source = "Output",
+						},
+						["Transform3DOp.ScaleLock"] = Input { Value = 0, },
+						["Transform3DOp.Scale.X"] = Input { Value = 1, },
+						["Transform3DOp.Scale.Y"] = Input { Value = 1, },
+						["Transform3DOp.Scale.Z"] = Input { Value = 0.5, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 550, 60 } },
+				},
+				Group = Merge3D {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput1 = Input {
+							SourceOp = "Depth",
+							Source = "Output",
+						},
+					},
+					ViewInfo = OperatorInfo { Pos = { 660, 60 } },
+				},
+				Rot = Transform3D {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput = Input {
+							SourceOp = "Group",
+							Source = "Output",
+						},
+						["Transform3DOp.Rotate.RotOrder"] = Input { Value = FuID { "XYZ" }, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 770, 60 } },
+				},
+				Ambient = LightAmbient {
+					CtrlWShown = false,
+					Inputs = {
+						Intensity = Input { Value = 0.7, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 770, 120 } },
+				},
+				KeyLight = LightDirectional {
+					CtrlWShown = false,
+					Inputs = {
+						Intensity = Input { Value = 0.4, },
+						["Transform3DOp.Rotate.X"] = Input { Value = -35, },
+						["Transform3DOp.Rotate.Y"] = Input { Value = 40, },
+						["ShadowLightInputs3D.ShadowsEnabled"] = Input { Value = 0, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 770, 170 } },
+				},
+				Cam = Camera3D {
+					CtrlWShown = false,
+					Inputs = {
+						AovType = Input { Value = 0, },
+						AoV = Input { Value = 30, },
+						ResolutionGateFit = Input { Value = FuID { "Height" }, },
+						["Transform3DOp.Translate.Z"] = Input { Value = 1.05, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 880, 120 } },
+				},
+				Scene = Merge3D {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput1 = Input {
+							SourceOp = "Spin",
+							Source = "Output",
+						},
+						SceneInput2 = Input {
+							SourceOp = "Cam",
+							Source = "Output",
+						},
+						SceneInput3 = Input {
+							SourceOp = "Ambient",
+							Source = "Output",
+						},
+						SceneInput4 = Input {
+							SourceOp = "KeyLight",
+							Source = "Output",
+						},
+					},
+					ViewInfo = OperatorInfo { Pos = { 880, 60 } },
+				},
+				Render = Renderer3D {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput = Input {
+							SourceOp = "Scene",
+							Source = "Output",
+						},
+						RendererType = Input { Value = FuID { "RendererOpenGL" }, },
+						CameraSelector = Input { Value = FuID { "Cam" }, },
+						["RendererOpenGL.LightingEnabled"] = Input { Value = 1, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 990, 60 } },
+				},
+				Spin = Transform3D {
+					CtrlWShown = false,
+					Inputs = {
+						SceneInput = Input {
+							SourceOp = "Rot",
+							Source = "Output",
+						},
+						["Transform3DOp.Rotate.Y"] = Input {
+							Value = 0,
+							Expression = "AutoRotate * Turns * 360 * (time - comp.RenderStart) / comp:GetPrefs(\"Comp.FrameFormat.Rate\")",
+						},
+						AutoRotate = Input { Value = 0, },
+						Turns = Input { Value = 0.5, },
+					},
+					ViewInfo = OperatorInfo { Pos = { 770, 10 } },
+					UserControls = ordered() {
+						AutoRotate = {
+							CBC_TriState = false,
+							INP_Integer = false,
+							LINKID_DataType = "Number",
+							ICS_ControlPage = "Controls",
+							INPID_InputControl = "CheckboxControl",
+							INP_Default = 0,
+							LINKS_Name = "Auto Rotate",
+						},
+						Turns = {
+							LINKID_DataType = "Number",
+							ICS_ControlPage = "Controls",
+							INPID_InputControl = "SliderControl",
+							INP_Default = 0.5,
+							INP_MinScale = -3,
+							INP_MaxScale = 3,
+							LINKS_Name = "Rotation Speed (turns/sec)",
+						},
+					},
+				},
+			},
+		}
+	},
+	ActiveTool = "ThreeDExtrusion"
+}
